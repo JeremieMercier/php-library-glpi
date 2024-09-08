@@ -31,7 +31,7 @@ namespace Glpi\Api\Rest;
 
 use Glpi\Api\Rest\Exception\BadEndpointException;
 use Glpi\Api\Rest\Exception\InsufficientArgumentsException;
-use Psr\Log\InvalidArgumentException;
+use InvalidArgumentException;
 
 
 /**
