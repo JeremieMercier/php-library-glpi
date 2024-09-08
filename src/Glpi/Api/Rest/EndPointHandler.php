@@ -1,4 +1,5 @@
 <?php
+
 /**
  * --------------------------------------------------------------------
  *
@@ -32,25 +33,28 @@ namespace Glpi\Api\Rest;
  * Class EndPointHandler
  * @package Glpi\Api\Rest
  */
-class EndPointHandler {
+class EndPointHandler
+{
 
    /**
     * @var Client
     */
-   protected $client;
+   protected Client $client;
 
    /**
     * EndPointHandler constructor.
     * @param Client $client
     */
-   public function __construct(Client $client) {
+   public function __construct(Client $client)
+   {
       $this->client = $client;
    }
 
    /**
     * @return Client
     */
-   public function getClient() {
+   public function getClient(): Client
+   {
       return $this->client;
    }
 
@@ -58,7 +62,8 @@ class EndPointHandler {
     * Return all the profiles associated to logged user.
     * @return array
     */
-   public function getMyProfiles() {
+   public function getMyProfiles(): array
+   {
       $response = $this->client->request('get', 'getMyProfiles');
       return [
          'statusCode' => $response->getStatusCode(),
@@ -70,7 +75,8 @@ class EndPointHandler {
     * Return the current active profile.
     * @return array
     */
-   public function getActiveProfile() {
+   public function getActiveProfile(): array
+   {
       $response = $this->client->request('get', 'getActiveProfile');
       return [
          'statusCode' => $response->getStatusCode(),
@@ -85,7 +91,8 @@ class EndPointHandler {
     * @param integer $profiles_id
     * @return array
     */
-   public function changeActiveProfile($profiles_id) {
+   public function changeActiveProfile(int $profiles_id): array
+   {
       $options['body'] = json_encode(['profiles_id' => $profiles_id]);
       $response = $this->client->request('post', 'changeActiveProfile', $options);
       return [
@@ -99,7 +106,8 @@ class EndPointHandler {
     * @param array $queryString
     * @return array
     */
-   public function getMyEntities(array $queryString = []) {
+   public function getMyEntities(array $queryString = []): array
+   {
       $options['query'] = $queryString;
       $response = $this->client->request('get', 'getMyEntities', $options);
       return [
@@ -112,7 +120,8 @@ class EndPointHandler {
     * Return active entities of current logged user.
     * @return array
     */
-   public function getActiveEntities() {
+   public function getActiveEntities(): array
+   {
       $response = $this->client->request('get', 'getActiveEntities');
       return [
          'statusCode' => $response->getStatusCode(),
@@ -127,7 +136,8 @@ class EndPointHandler {
     * @param array $parameters
     * @return array
     */
-   public function changeActiveEntities(array $parameters = []) {
+   public function changeActiveEntities(array $parameters = []): array
+   {
       $options = [];
       if ($parameters) {
          $options['body'] = json_encode($parameters);
@@ -138,5 +148,4 @@ class EndPointHandler {
          'body' => $response->getBody()->getContents(),
       ];
    }
-
 }

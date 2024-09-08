@@ -1,4 +1,5 @@
 <?php
+
 /**
  * --------------------------------------------------------------------
  *
@@ -27,7 +28,8 @@
 
 namespace Glpi\Api\Rest;
 
-class ErrorHandler {
+class ErrorHandler
+{
 
    /**
     * List of messages
@@ -67,7 +69,8 @@ class ErrorHandler {
     * @param null $args
     * @return string
     */
-   public static function getMessage($error, $args = null) {
+   public static function getMessage(string $error, $args = null): string
+   {
       return sprintf(self::errors[$error], $args);
    }
 }

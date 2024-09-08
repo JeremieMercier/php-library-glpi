@@ -1,4 +1,5 @@
 <?php
+
 /**
  * --------------------------------------------------------------------
  *
@@ -370,24 +371,27 @@ use Psr\Log\InvalidArgumentException;
  * @method array WifiNetwork(string $action, array $input = [], array $params = [])
  *
  */
-class ItemHandler {
+class ItemHandler
+{
    /**
     * @var Client
     */
-   protected $client;
+   protected Client $client;
 
    /**
     * ItemHandler constructor.
     * @param Client $client
     */
-   public function __construct(Client $client) {
+   public function __construct(Client $client)
+   {
       $this->client = $client;
    }
 
    /**
     * @return Client
     */
-   public function getClient() {
+   public function getClient(): Client
+   {
       return $this->client;
    }
 
@@ -398,7 +402,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function getItem($itemType, $id, array $queryString = []) {
+   public function getItem(string $itemType, int $id, array $queryString = []): array
+   {
       $options = [];
       if ($queryString) {
          $options['query'] = $queryString;
@@ -416,7 +421,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function getAllItems($itemType, array $queryString = []) {
+   public function getAllItems(string $itemType, array $queryString = []): array
+   {
       $options = [];
       if ($queryString) {
          $options['query'] = $queryString;
@@ -440,13 +446,17 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function getSubItems($itemType, $id, $subItem, array $queryString = []) {
+   public function getSubItems(string $itemType, int $id, string $subItem, array $queryString = []): array
+   {
       $options = [];
       if ($queryString) {
          $options['query'] = $queryString;
       }
-      $response = $this->client->request('get', $itemType . '/' . $id . '/' . $subItem,
-         $options);
+      $response = $this->client->request(
+         'get',
+         $itemType . '/' . $id . '/' . $subItem,
+         $options
+      );
       $contentRange = $response->getHeader('Content-Range');
       $acceptRange = $response->getHeader('Accept-Range');
       return [
@@ -463,7 +473,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function getMultipleItems(array $items, array $queryString = []) {
+   public function getMultipleItems(array $items, array $queryString = []): array
+   {
       foreach ($items as $item) {
          if (!key_exists('itemtype', $item) || !key_exists('items_id', $item)) {
             throw new InsufficientArgumentsException(ErrorHandler::getMessage('ERROR_APILIB_ARGS_MANDATORY', "'itemtype' and 'items_id'"));
@@ -483,7 +494,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function listSearchOptions($itemType, array $queryString = []) {
+   public function listSearchOptions(string $itemType, array $queryString = []): array
+   {
       $options = [];
       if ($queryString) {
          $options['query'] = $queryString;
@@ -501,7 +513,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function searchItems($itemType, array $queryString = []) {
+   public function searchItems(string $itemType, array $queryString = []): array
+   {
       $options = [];
       if ($queryString) {
          $options['query'] = $queryString;
@@ -524,7 +537,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function addItems($itemType, array $queryString) {
+   public function addItems(string $itemType, array $queryString): array
+   {
       $options['body'] = json_encode(['input' => $queryString]);
       $response = $this->client->request('post', $itemType . '/', $options);
       $location = $response->getHeader('location');
@@ -544,7 +558,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function updateItems($itemType, $id, array $queryString) {
+   public function updateItems(string $itemType, int $id, array $queryString): array
+   {
       if (!$id) {
          if (!$queryString) {
             throw new InsufficientArgumentsException(ErrorHandler::getMessage('ERROR_APILIB_ARGS_MANDATORY', "'id' to identify the item"));
@@ -571,7 +586,8 @@ class ItemHandler {
     * @param array $queryString
     * @return array
     */
-   public function deleteItems($itemType, $id, array $inputValues = [], array $queryString = []) {
+   public function deleteItems(string $itemType, int $id, array $inputValues = [], array $queryString = []): array
+   {
       $options = [];
       if (!$id) {
          if (!$inputValues) {
@@ -610,7 +626,8 @@ class ItemHandler {
     * @return array|null
     * @throws InsufficientArgumentsException|BadEndpointException|InvalidArgumentException
     */
-   public function __call($name, $arguments) {
+   public function __call(string $name, $arguments): ?array
+   {
       $name = ucfirst($name);
 
       if (count($arguments) < 2) {
@@ -644,5 +661,4 @@ class ItemHandler {
       }
       return $result;
    }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * --------------------------------------------------------------------
  *
@@ -37,29 +38,31 @@ use GuzzleHttp\Exception\RequestException;
  * Class Client
  * @package Glpi\Api\Rest
  */
-class Client {
+class Client
+{
 
    /** @var HttpClient instance of the HTTP client */
-   private $httpClient = null;
+   private ?HttpClient $httpClient = null;
 
    /** @var string URL to the GLPI API rest */
-   private $url;
+   private string $url;
 
    /** @var $appToken string an application token to use for requests */
-   private $appToken = null;
+   private ?string $appToken = null;
 
    /** @var string Session token obtained after initSession() */
-   private $sessionToken = null;
+   private ?string $sessionToken = null;
 
    /** integer ID of the logged in user */
-   private $loginUserId = null;
+   private ?int $loginUserId = null;
 
    /**
     * Client constructor.
     * @param string $url
     * @param HttpClient $httpClient
     */
-   public function __construct($url, HttpClient $httpClient) {
+   public function __construct(string $url, HttpClient $httpClient)
+   {
       $this->httpClient = $httpClient;
       $this->url = trim($url, '/') . '/';
    }
@@ -69,15 +72,18 @@ class Client {
     *
     * @param string $appToken
     */
-   public function setAppToken($appToken = null) {
+   public function setAppToken(?string $appToken): void
+   {
       $this->appToken = $appToken;
    }
 
-   public function getSessionToken() {
+   public function getSessionToken(): ?string
+   {
       return $this->sessionToken;
    }
 
-   public function setSessionToken($token) {
+   public function setSessionToken(string $token): void
+   {
       $this->sessionToken = $token;
    }
 
@@ -86,7 +92,8 @@ class Client {
     *
     * @return null|integer
     */
-   public function getSessionUserId() {
+   public function getSessionUserId(): ?int
+   {
       if ($this->sessionToken === null) {
          return null;
       }
@@ -103,11 +110,14 @@ class Client {
     * @throws Exception
     * @return boolean
     */
-   public function initSessionByCredentials($user, $password) {
+   public function initSessionByCredentials(string $user, string $password): bool
+   {
       $response = $this->request('get', 'initSession', ['auth' => [$user, $password]]);
       $body = json_decode($response->getBody()->getContents(), true);
-      if ($response->getStatusCode() != 200
-         || !$this->sessionToken = $body['session_token']) {
+      if (
+         $response->getStatusCode() != 200
+         || !$this->sessionToken = $body['session_token']
+      ) {
          throw new Exception(ErrorHandler::getMessage($body[0]));
       }
       if (isset($body['users_id'])) {
@@ -126,7 +136,8 @@ class Client {
     *
     * @return boolean True if success
     */
-   public function initSessionByUserToken($userToken) {
+   public function initSessionByUserToken(string $userToken): bool
+   {
       $response = $this->request(
          'get',
          'initSession',
@@ -137,8 +148,10 @@ class Client {
          ]
       );
       $body = json_decode($response->getBody()->getContents(), true);
-      if ($response->getStatusCode() != 200
-         || !$this->sessionToken = $body['session_token']) {
+      if (
+         $response->getStatusCode() != 200
+         || !$this->sessionToken = $body['session_token']
+      ) {
          throw new Exception(ErrorHandler::getMessage($body[0]));
       }
       if (isset($body['users_id'])) {
@@ -153,7 +166,8 @@ class Client {
     * @return bool
     * @throws Exception
     */
-   public function killSession() {
+   public function killSession(): bool
+   {
       $response = $this->request('get', 'killSession');
       if ($response->getStatusCode() != 200) {
          $body = json_decode($response->getBody()->getContents());
@@ -172,7 +186,8 @@ class Client {
     * @return mixed|null|\Psr\Http\Message\ResponseInterface
     * @throws Exception
     */
-   public function request($method, $uri, array $options = []) {
+   public function request(string $method, string $uri, array $options = []): ?\Psr\Http\Message\ResponseInterface
+   {
       $apiToken = $this->addTokens();
       try {
          $options['headers']['Content-Type'] = "application/json";
@@ -205,10 +220,11 @@ class Client {
     * Return the current php $_SESSION.
     * @return array
     */
-   public function getFullSession() {
+   public function getFullSession(): array
+   {
       $response = $this->request('get', 'getFullSession');
       $response = [
-         'statusCode' => $response->getStatusCode(), 
+         'statusCode' => $response->getStatusCode(),
          'body' => $response->getBody()->getContents()
       ];
       if ($this->loginUserId === null && $response['statusCode'] === 200) {
@@ -221,7 +237,8 @@ class Client {
     * Return the current $CFG_GLPI.
     * @return array
     */
-   public function getGlpiConfig() {
+   public function getGlpiConfig(): array
+   {
       $response = $this->request('get', 'getGlpiConfig');
       return ['statusCode' => $response->getStatusCode(), 'body' => $response->getBody()->getContents()];
    }
@@ -231,7 +248,8 @@ class Client {
     *
     * @return string[]
     */
-   private function addTokens() {
+   private function addTokens(): array
+   {
       $headers = [];
       if ($this->appToken !== null) {
          $headers['App-Token'] = $this->appToken;
@@ -252,7 +270,8 @@ class Client {
     * @param string $email
     * @return array
     */
-   public function recoveryPassword($email) {
+   public function recoveryPassword(string $email): array
+   {
       $options['body'] = json_encode($params['email'] = $email);
       $response = $this->request('put', 'lostPassword', $options);
       return [
@@ -272,7 +291,8 @@ class Client {
     * @param string $newPassword
     * @return array
     */
-   public function resetPassword($email, $recoveryToken, $newPassword) {
+   public function resetPassword(string $email, string $recoveryToken, string $newPassword): array
+   {
       if (($recoveryToken && !$newPassword) || (!$recoveryToken && $newPassword)) {
          throw new InsufficientArgumentsException(ErrorHandler::getMessage('ERROR_APILIB_ARGUMENTS'));
       }
@@ -293,7 +313,8 @@ class Client {
     *
     * @return array
     */
-   public function getActiveProfile() {
+   public function getActiveProfile(): array
+   {
       $response = $this->request('get', 'getActiveProfile');
       return ['statusCode' => $response->getStatusCode(), 'body' => $response->getBody()->getContents()];
    }
