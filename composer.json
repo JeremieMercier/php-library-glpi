@@ -32,11 +32,7 @@
         "guzzlehttp\/guzzle": "^6.3"
     },
     "require-dev": {
-        "atoum\/atoum": "^3.1",
-        "atoum\/stubs": "^2.5",
-        "atoum\/json-schema-extension": "^2.1",
-        "glpi-project\/tools": "^0.1.2",
-        "atoum\/reports-extension": "^3.0"
+        "glpi-project\/tools": "^0.1.2"
     },
     "autoload": {
         "psr-4": {
@@ -52,7 +48,10 @@
         }
     },
     "config": {
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
