@@ -28,7 +28,7 @@
         "irc": "irc:\/\/irc.freenode.org\/glpi"
     },
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8.2",
         "guzzlehttp\/guzzle": "^7.4.5"
     },
     "autoload": {
