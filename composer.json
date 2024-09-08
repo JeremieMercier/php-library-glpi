@@ -1,5 +1,5 @@
 {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "name": "glpi-project\/php-library-glpi",
     "type": "library",
     "description": "GLPI API Client Library for PHP",
